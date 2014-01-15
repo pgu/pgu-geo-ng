@@ -57,7 +57,28 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
+
+        <script src="scripts/services/linkedIn.js"></script>
+
+        <script src="scripts/controllers/loginCtrl.js"></script>
+        <script src="scripts/controllers/editCtrl.js"></script>
+        <script src="scripts/controllers/readCtrl.js"></script>
         <!-- endbuild -->
+
+  <!--<script>-->
+
+      <!--function on_load_linkedin_callback() {-->
+<!--//          http://stackoverflow.com/questions/11217002/how-to-asyncronously-load-a-google-map-in-angularjs-->
+<!--// http://www.bennadel.com/blog/2554-Loading-AngularJS-Components-With-RequireJS-After-Application-Bootstrap.htm-->
+      <!--}-->
+
+  <!--</script>-->
+  <!--<script async defer src="http://platform.linkedin.com/in.js">-->
+      <!--api_key: qwfxh7u2673i-->
+      <!--authorize: true-->
+      <!--scope: r_fullprofile r_network-->
+      <!--onLoad: on_load_linkedin_callback-->
+  <!--</script>-->
+
 </body>
 </html>

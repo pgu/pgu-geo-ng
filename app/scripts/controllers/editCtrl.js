@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pguGeoNgApp')
-    .controller('MainCtrl', function ($scope, $http, API_host) {
+    .controller('EditCtrl', function ($scope, $http, API_host) {
         $scope.awesomeThings = [
             'HTML5 Boilerplate',
             'AngularJS',
