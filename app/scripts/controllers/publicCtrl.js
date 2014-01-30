@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('pguGeoNgApp')
-    .controller('ReadCtrl', function () {
+    .controller('PublicCtrl', function () {
 
     });

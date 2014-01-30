@@ -1,39 +1,45 @@
 'use strict';
 
-angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window) {
-
-    var IN = $window.IN;
+angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeout) {
 
     return {
-        get: function() {
+        get: function () {
 
-            if (!_(IN).isUndefined()) {
-                console.log('direct IN');
-                return $q.when(IN);
+            if (!_($window.IN).isUndefined()) {
+                return $q.when($window.IN);
             }
 
-            console.log('load IN');
             // loads the LinkedIn API
             var deferred = $q.defer();
             var promise = deferred.promise;
 
-            $window.$.ajax({
-                url: 'http://platform.linkedin.com/in.js',
-                dataType: 'script',
-                data: {
-                    api_key: 'qwfxh7u2673i',
-                    authorize: true,
-                    scope: 'r_fullprofile r_network'
-                }
-            })
-                .done(function () {
-                    deferred.resolve($window.IN);
-                })
-                .fail(function () {
-                    $window.alert('Ouch! Unable to load LinkedIn\'s API!');
-                });
+            $window.onLinkedInLoad = function () {
+                console.info('onLinkedInLoad');
+                deferred.resolve($window.IN);
+            };
+
+            var $ = $window.$;
+
+            $($window.$document).ready(function () {
+
+                $.getScript('http://platform.linkedin.com/in.js?async=true')
+
+                    .done(function () {
+                        $window.IN.init({
+                            api_key: 'qwfxh7u2673i',
+                            authorize: true,
+                            onLoad: 'onLinkedInLoad',
+                            scope: 'r_fullprofile r_network'
+                        });
+                    })
+
+                    .fail(function () {
+                        console.error('Ouch! Unable to load LinkedIn\'s API!');
+                    });
+            });
 
             return promise;
         }
     };
-});
+})
+;
