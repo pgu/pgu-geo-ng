@@ -2,11 +2,13 @@
 
 angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeout) {
 
+    var IN = null;
+
     return {
         get: function () {
 
-            if (!_($window.IN).isUndefined()) {
-                return $q.when($window.IN);
+            if (!_(IN).isNull()) {
+                return $q.when(IN);
             }
 
             // loads the LinkedIn API
@@ -15,7 +17,8 @@ angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeou
 
             $window.onLinkedInLoad = function () {
                 console.info('onLinkedInLoad');
-                deferred.resolve($window.IN);
+                IN = $window.IN;
+                deferred.resolve(IN);
             };
 
             var $ = $window.$;
