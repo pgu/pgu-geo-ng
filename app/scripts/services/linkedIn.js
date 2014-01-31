@@ -16,7 +16,12 @@ angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeou
             var promise = deferred.promise;
 
             $window.onLinkedInLoad = function () {
-                console.info('onLinkedInLoad');
+
+                if (!_(IN).isNull()) { // already initialized by a concurrent request
+                    deferred.resolve(IN);
+                    return;
+                }
+
                 IN = $window.IN;
                 deferred.resolve(IN);
             };

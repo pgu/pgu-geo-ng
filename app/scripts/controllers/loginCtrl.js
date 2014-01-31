@@ -1,15 +1,14 @@
 'use strict';
 
 angular.module('pguGeoNgApp')
-    .controller('LoginCtrl', function ($scope, IN, $location) {
+    .controller('LoginCtrl', function ($scope, IN, $location, $timeout) {
 
-        $scope.isAuthorized = false;
+        IN.parse(); // renders the LinkedIn login btn
 
-        if (IN.User.isAuthorized()) {
-            $location.path('/edit');
-
-        } else {
-            IN.parse(); // renders the LinkedIn login btn
-        }
+        IN.Event.on(IN, 'auth', function () {
+            $timeout(function () {
+                $location.path('/edit');
+            }, 0);
+        });
 
     });
