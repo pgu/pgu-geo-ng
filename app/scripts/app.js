@@ -10,7 +10,7 @@ angular.module('pguGeoNgApp', [
                 templateUrl: 'views/login.html',
                 controller: 'LoginCtrl',
                 resolve: {
-                    IN: ['LinkedIn', function(LinkedIn) {
+                    IN: ['LinkedIn', function (LinkedIn) {
                         return LinkedIn.get();
                     }]
                 }
@@ -19,17 +19,61 @@ angular.module('pguGeoNgApp', [
                 templateUrl: 'views/edit.html',
                 controller: 'EditCtrl',
                 resolve: {
-                    User: ['LinkedIn', '$location', '$q', function(LinkedIn, $location, $q) {
-                        return LinkedIn.get().then(function(IN) {
+                    member: ['LinkedIn', '$location', '$q', function (LinkedIn, $location, $q) {
+                        return LinkedIn.get()
 
-                            if (IN.User.isAuthorized()) {
-                                return IN.User;
+                            .then(function (IN) {
 
-                            } else {
+                                if (IN.User.isAuthorized()) {
+
+                                    var profileDeferred = $q.defer();
+                                    var profilePromise = profileDeferred.promise;
+
+                                    var connectionsDeferred = $q.defer();
+                                    var connectionsPromise = connectionsDeferred.promise;
+
+                                    IN.API.Profile('me')
+                                        .fields(
+                                            'id',
+                                            'first-name',
+                                            'last-name',
+                                            'headline',
+                                            'location',
+                                            'numConnections',
+                                            'numConnectionsCapped',
+                                            'summary',
+                                            'specialties',
+                                            'pictureUrl',
+                                            'publicProfileUrl',
+                                            'positions:(id,company,endDate,isCurrent,startDate,summary,title,location)',
+                                            'languages:(language,proficiency)',
+                                            'educations'
+                                        )
+                                        .result(function (profiles) {
+                                            profileDeferred.resolve(_(profiles.values).first());
+                                        });
+
+                                    IN.API.Connections('me')
+                                        .fields('firstName', 'lastName', 'location')
+                                        .result(function (connections) {
+                                            connectionsDeferred.resolve(connections);
+                                        });
+
+                                    return $q.all({ profile: profilePromise, connections: connectionsPromise})
+
+                                        .catch(function () {
+                                            $location.path('/');
+                                        });
+
+                                } else {
+                                    $location.path('/');
+                                    return $q.reject();
+                                }
+                            })
+
+                            .catch(function () {
                                 $location.path('/');
-                                return $q.reject();
-                            }
-                        });
+                            });
                     }]
                 }
             })
