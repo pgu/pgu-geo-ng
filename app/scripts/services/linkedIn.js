@@ -3,6 +3,7 @@
 angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeout) {
 
     var IN = null;
+    var promise = null;
 
     return {
         get: function () {
@@ -11,17 +12,15 @@ angular.module('pguGeoNgApp').factory('LinkedIn', function ($q, $window, $timeou
                 return $q.when(IN);
             }
 
-            // loads the LinkedIn API
+            if (!_(promise).isNull()) { // a request has already been initiated
+                return promise;
+            }
+
+            // loads once the LinkedIn API
             var deferred = $q.defer();
-            var promise = deferred.promise;
+            promise = deferred.promise;
 
             $window.onLinkedInLoad = function () {
-
-                if (!_(IN).isNull()) { // already initialized by a concurrent request
-                    deferred.resolve(IN);
-                    return;
-                }
-
                 IN = $window.IN;
                 deferred.resolve(IN);
             };
